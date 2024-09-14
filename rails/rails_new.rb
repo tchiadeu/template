@@ -9,6 +9,7 @@ gem 'devise' if is_devise_needed
 gem 'devise-i18n' if is_devise_needed && not_english_app
 gem 'tailwind_merge'
 gem 'html_attrs'
+gem 'view_component-contrib'
 
 gem_group :development, :test do
   gem 'rspec-rails'
@@ -55,6 +56,8 @@ after_bundle do
   if is_devise_needed
     rails_command 'generate devise:install'
     rails_command "generate devise #{devise_model_name}"
+    run 'sudo service postgresql start'
+    rails_command 'db:create'
     rails_command 'db:migrate'
     rails_command 'generate devise:views'
   end
