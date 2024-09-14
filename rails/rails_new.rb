@@ -1,24 +1,13 @@
 # Gemfile
 inject_into_file "Gemfile", before: "group :development, :test do" do
   <<~RUBY
-    gem "devise"
+    gem 'devise'
     gem 'devise-i18n'
     gem 'rubocop-rails', require: false
-    gem "html_attrs"
+    gem 'html_attrs'
   RUBY
 end
 
-inject_into_file "Gemfile", after: "group :development, :test do" do
-  <<~RUBY
-    gem "rspec-rails"
-    gem 'guard-rspec', require: false
-    gem 'pry-rails'
-    gem 'pry-byebug'
-    gem "factory_bot_rails"
-    gem "faker"
-    gem "dotenv-rails"
-  RUBY
-end
 
 # Generators
 generators = <<~RUBY
