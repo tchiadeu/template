@@ -58,6 +58,5 @@ after_bundle do
   git :init
   git add: "."
   git commit: %Q{ -m 'Rails new / Initial commit' }
+  rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
 end
-
-rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
