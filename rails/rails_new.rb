@@ -7,7 +7,6 @@ end
 
 gem 'devise' if is_devise_needed
 gem 'devise-i18n' if is_devise_needed && not_english_app
-gem 'rubocop-rails', require: false
 gem 'tailwind_merge'
 gem 'html_attrs'
 
@@ -26,11 +25,13 @@ generators = <<~RUBY
   config.generators do |generate|
     generate.assets false
     generate.helper false
-    generate.test_framework :rspec,
+    generate.test_framework(
+      :rspec,
       fixture_replacement: :factory_bot,
       helper_specs: false,
       view_specs: false,
       routing_specs: false,
+    )
     generate.fixture_replacement :factory_bot, dir: 'spec/factories'
   end
 RUBY
@@ -40,7 +41,6 @@ general_config = <<~RUBY
   config.paths['app/views'].unshift(Rails.root.join('app/views/controllers'))
   config.autoload_paths << Rails.root.join("app", "views", "components")
   config.view_component.preview_paths << Rails.root.join("app", "views", "components")
-
   config.autoload_paths << Rails.root.join("app", "decorators")
   config.autoload_paths << Rails.root.join("app", "services")
 RUBY
@@ -58,9 +58,8 @@ after_bundle do
     rails_command 'db:migrate'
     rails_command 'generate devise:views'
   end
-  run 'rubocop --require rubocop-rails'
   rails_command 'generate rspec:install'
-  run 'mkdir spec/fixtures'
+  run 'mkdir spec/factories' unless is_devise_needed
   environment generators
   environment general_config
   git :init
