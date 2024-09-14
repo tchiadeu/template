@@ -5,7 +5,6 @@ inject_into_file "Gemfile", before: "group :development, :test do" do
     gem 'devise-i18n'
     gem 'rubocop-rails', require: false
     gem "html_attrs"
-    gem "dry-initializer", "~> 3.1"
   RUBY
 end
 
