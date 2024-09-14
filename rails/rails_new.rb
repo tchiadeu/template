@@ -49,12 +49,15 @@ RUBY
 
 environment general_config
 
+run "mkdir app/services"
+run "mkdir app/decorators"
+run "touch .env"
+
 # After bundle
 after_bundle do
-  rails app:template LOCATION="https://railsbytes.com/script/zJosO5"
-  run "mkdir app/services"
-  run "mkdir app/decorators"
   git :init
   git add: "."
   git commit: %Q{ -m 'Rails new / Initial commit' }
 end
+
+rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
