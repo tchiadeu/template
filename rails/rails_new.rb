@@ -1,7 +1,14 @@
 # Gemfile
-gem 'devise'
-gem 'devise-i18n'
+is_devise_needed = yes?('Install devise for the users?')
+if is_devise_needed
+  not_english_app = no?('The app will be for english users only?')
+  devise_model_name = ask('What will be the model name for devise?')
+end
+
+gem 'devise' if is_devise_needed
+gem 'devise-i18n' if is_devise_needed && not_english_app
 gem 'rubocop-rails', require: false
+gem 'tailwind_merge'
 gem 'html_attrs'
 
 gem_group :development, :test do
@@ -44,10 +51,20 @@ run 'touch .env'
 
 # After bundle
 after_bundle do
+  rails_command 'generate rspec:install'
+  if is_devise_needed
+    rails_command 'generate devise:install'
+    rails_command "generate devise #{devise_model_name}"
+    rails_command 'db:migrate'
+    rails_command 'generate devise:views'
+  end
+  run 'rubocop --require rubocop-rails'
+  rails_command 'generate rspec:install'
+  run 'mkdir spec/fixtures'
+  environment generators
+  environment general_config
   git :init
   git add: '.'
   git commit: "-m 'Rails new / Initial Commit'"
-  environment generators
-  environment general_config
   rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
 end
