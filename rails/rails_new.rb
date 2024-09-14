@@ -2,9 +2,9 @@
 inject_into_file "Gemfile", before: "group :development, :test do" do
   <<~RUBY
     gem "devise"
+    gem 'devise-i18n'
     gem 'rubocop-rails', require: false
     gem "html_attrs"
-    gem 'devise-i18n'
     gem "dry-initializer", "~> 3.1"
   RUBY
 end
@@ -44,12 +44,17 @@ general_config = <<~RUBY
   config.view_component.preview_paths << Rails.root.join("app", "views", "components")
 
   config.autoload_paths << Rails.root.join("app", "decorators")
+  config.autoload_paths << Rails.root.join("app", "services")
 RUBY
 
 environment general_config
 
-
 # After bundle
 after_bundle do
   rails app:template LOCATION="https://railsbytes.com/script/zJosO5"
+  run "mkdir app/services"
+  run "mkdir app/decorators"
+  git :init
+  git add: "."
+  git commit: %Q{ -m 'Rails new / Initial commit' }
 end
