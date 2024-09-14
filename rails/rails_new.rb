@@ -1,24 +1,17 @@
 # Gemfile
-inject_into_file "Gemfile", before: "group :development, :test do" do
-  <<~RUBY
-    gem 'devise'
-    gem 'devise-i18n'
-    gem 'rubocop-rails', require: false
-    gem 'html_attrs'
-  RUBY
-end
+gem 'devise'
+gem 'devise-i18n'
+gem 'rubocop-rails', require: false
+gem 'html_attrs'
 
-inject_into_file "Gemfile", after: "group :development, :test do" do
-  "\n"
-  <<~RUBY
-    gem 'rspec-rails'
-    gem 'guard-rspec', require: false
-    gem 'pry-rails'
-    gem 'pry-byebug'
-    gem 'factory_bot_rails'
-    gem 'faker'
-    gem 'dotenv-rails'
-  RUBY
+gem_group :development, :test do
+  gem 'rspec-rails'
+  gem 'guard-rspec', require: false
+  gem 'pry-rails'
+  gem 'pry-byebug'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'dotenv-rails'
 end
 
 # Generators
@@ -35,8 +28,6 @@ generators = <<~RUBY
   end
 RUBY
 
-environment generators
-
 # General Config
 general_config = <<~RUBY
   config.paths['app/views'].unshift(Rails.root.join('app/views/controllers'))
@@ -47,16 +38,16 @@ general_config = <<~RUBY
   config.autoload_paths << Rails.root.join("app", "services")
 RUBY
 
-environment general_config
-
-run "mkdir app/services"
-run "mkdir app/decorators"
-run "touch .env"
+run 'mkdir app/services'
+run 'mkdir app/decorators'
+run 'touch .env'
 
 # After bundle
 after_bundle do
   git :init
-  git add: "."
-  git commit: %Q{ -m 'Rails new / Initial commit' }
+  git add: '.'
+  git commit: "-m 'Rails new / Initial Commit'"
+  environment generators
+  environment general_config
   rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
 end
