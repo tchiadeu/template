@@ -1,12 +1,19 @@
 # Gemfile
+say '👋 Welcome to the user builder template'
 is_devise_needed = yes?('Install devise for the users?')
 if is_devise_needed
   not_english_app = no?('The app will be for english users only?')
   devise_model_name = ask('What will be the model name for devise?')
 end
 
-gem 'devise' if is_devise_needed
-gem 'devise-i18n' if is_devise_needed && not_english_app
+if is_devise_needed
+  gem 'devise'
+  say_status :info, '✅ Devise gem added'
+  if not_english_app
+    gem 'devise-i18n'
+    say_status :info, '✅ Devise-I18n gem added'
+  end
+end
 gem 'tailwind_merge'
 gem 'html_attrs'
 gem 'view_component-contrib'
@@ -52,17 +59,16 @@ run 'touch .env'
 
 # After bundle
 after_bundle do
-  rails_command 'generate rspec:install'
+  generate('rspec:install')
   if is_devise_needed
-    rails_command 'generate devise:install'
-    rails_command "generate devise #{devise_model_name}"
+    generate('devise:install')
+    generate('devise', devise_model_name)
     run 'sudo service postgresql start'
-    rails_command 'db:create'
-    rails_command 'db:migrate'
-    rails_command 'generate devise:views'
+    rails_command 'db:create db:migrate'
+    generate('devise:views')
   end
-  rails_command 'generate rspec:install'
   run 'mkdir spec/factories' unless is_devise_needed
+  run "echo '.env*' >> .gitignore"
   environment generators
   environment general_config
   rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
