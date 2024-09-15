@@ -68,7 +68,7 @@ after_bundle do
     generate('devise:views')
   end
   run 'mkdir spec/factories' unless is_devise_needed
-  run "echo '.env*' >> .gitignore"
+  run 'rm -rf test'
   environment generators
   environment general_config
   rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
