@@ -65,8 +65,8 @@ after_bundle do
   run 'mkdir spec/factories' unless is_devise_needed
   environment generators
   environment general_config
+  rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
   git :init
   git add: '.'
   git commit: "-m 'Rails new / Initial Commit'"
-  rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
 end
