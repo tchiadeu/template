@@ -59,7 +59,6 @@ run 'touch .env'
 
 # After bundle
 after_bundle do
-  generate('rspec:install')
   if is_devise_needed
     generate('devise:install')
     generate('devise', devise_model_name)
@@ -67,6 +66,8 @@ after_bundle do
     rails_command 'db:create db:migrate'
     generate('devise:views')
   end
+  generate('rspec:install')
+  run 'bundle exec guard init rspec'
   run 'mkdir spec/factories' unless is_devise_needed
   run 'rm -rf test'
   environment generators
