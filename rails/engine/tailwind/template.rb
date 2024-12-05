@@ -1,4 +1,5 @@
-APPLICATION_LAYOUT_PATH             = Rails.root.join("app/views/layouts/application.html.erb")
+ENGINE_NAME                         = Rails.root.to_s.camelize.demodulize.tableize
+APPLICATION_LAYOUT_PATH             = Rails.root.join("app/views/layouts/#{ENGINE_NAME}/application.html.erb")
 CENTERING_CONTAINER_INSERTION_POINT = /^\s*<%= yield %>/.freeze
 
 if APPLICATION_LAYOUT_PATH.exist?
@@ -20,7 +21,7 @@ say "Build into app/assets/builds"
 empty_directory "app/assets/builds"
 keep_file "app/assets/builds"
 
-if (sprockets_manifest_path = Rails.root.join("app/assets/config/#{Rails.root.to_s.camelize.demodulize.tableize}_manifest.js")).exist?
+if (sprockets_manifest_path = Rails.root.join("app/assets/config/#{ENGINE_NAME}_manifest.js")).exist?
   append_to_file sprockets_manifest_path, %(//= link_tree ../builds\n)
 end
 
@@ -37,10 +38,10 @@ unless Rails.root.join("config/tailwind.config.js").exist?
 end
 
 unless Rails.root.join("app/assets/stylesheets/application.tailwind.css").exist?
-  say "Add default app/assets/stylesheets/application.tailwind.css"
+  say "Add default app/assets/stylesheets/#{ENGINE_NAME}/application.tailwind.css"
   copy_file(
     Tailwindcss::Engine.root.join("lib/install/application.tailwind.css"),
-    Rails.root.join("app/assets/stylesheets/application.tailwind.css")
+    Rails.root.join("app/assets/stylesheets/#{ENGINE_NAME}/application.tailwind.css")
   )
 end
 
