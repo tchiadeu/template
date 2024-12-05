@@ -1,6 +1,8 @@
 ENGINE_NAME                         = Rails.root.to_s.camelize.demodulize.tableize
 APPLICATION_LAYOUT_PATH             = Rails.root.join("app/views/layouts/#{ENGINE_NAME}/application.html.erb")
 CENTERING_CONTAINER_INSERTION_POINT = /^\s*<%= yield %>/.freeze
+puts APPLICATION_LAYOUT_PATH
+puts APPLICATION_LAYOUT_PATH.class
 
 if APPLICATION_LAYOUT_PATH.exist?
   say "Add Tailwindcss include tags and container element in application layout"
