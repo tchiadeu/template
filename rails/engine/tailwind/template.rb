@@ -1,6 +1,5 @@
 ENGINE_NAME                         = File.basename(__FILE__).gsub('_tasks.rake', '')
-ENGINE_MODULE                       = ENGINE_NAME.camelize.constantize
-APPLICATION_LAYOUT_PATH             = ENGINE_MODULE::Engine.root.join("app/views/layouts/application.html.erb")
+APPLICATION_LAYOUT_PATH             = Rails.root.join("app/views/layouts/application.html.erb")
 CENTERING_CONTAINER_INSERTION_POINT = /^\s*<%= yield %>/.freeze
 
 if APPLICATION_LAYOUT_PATH.exist?
@@ -22,22 +21,19 @@ say "Build into app/assets/builds"
 empty_directory "app/assets/builds"
 keep_file "app/assets/builds"
 
-if (sprockets_manifest_path = ENGINE_MODULE::Engine.root.join("app/assets/config/#{ENGINE_NAME}_manifest.js")).exist?
+if (sprockets_manifest_path = Rails.root.join("app/assets/config/#{ENGINE_NAME}_manifest.js")).exist?
   append_to_file sprockets_manifest_path, %(//= link_tree ../builds\n)
 end
 
-if ENGINE_MODULE::Engine.root.join(".gitignore").exist?
-  append_to_file(
-    ENGINE_MODULE::Engine.root.join(".gitignore"),
-    %(\n/app/assets/builds/*\n!/app/assets/builds/.keep\n)
-  )
+if Rails.root.join(".gitignore").exist?
+  append_to_file(".gitignore", %(\n/app/assets/builds/*\n!/app/assets/builds/.keep\n))
 end
 
 unless Rails.root.join("config/tailwind.config.js").exist?
   say "Add default config/tailwindcss.config.js"
   copy_file(
     Tailwindcss::Engine.root.join("lib/install/tailwind.config.js"),
-    ENGINE_MODULE::Engine.root.join("config/tailwind.config.js")
+    Rails.root.join("config/tailwind.config.js")
   )
 end
 
@@ -45,20 +41,20 @@ unless Rails.root.join("app/assets/stylesheets/application.tailwind.css").exist?
   say "Add default app/assets/stylesheets/application.tailwind.css"
   copy_file(
     Tailwindcss::Engine.root.join("lib/install/application.tailwind.css"),
-    ENGINE_MODULE::Engine.root.join("app/assets/stylesheets/application.tailwind.css")
+    Rails.root.join("app/assets/stylesheets/application.tailwind.css")
   )
 end
 
-if ENGINE_MODULE::Engine.root.join("Procfile.dev").exist?
+if Rails.root.join("Procfile.dev").exist?
   append_to_file(
-    ENGINE_MODULE::Engine.root.join("Procfile.dev"),
+    "Procfile.dev",
     "css: bin/rails tailwindcss:watch\n"
   )
 else
   say "Add default Procfile.dev"
   copy_file(
     Tailwindcss::Engine.root.join("lib/install/Procfile.dev"),
-    ENGINE_MODULE::Engine.root.join("Procfile.dev")
+    "Procfile.dev"
   )
 
   say "Ensure foreman is installed"
@@ -68,7 +64,7 @@ end
 say "Add bin/dev to start foreman"
 copy_file(
   Tailwindcss::Engine.root.join("lib/install/dev"),
-  ENGINE_MODULE::Engine.root.join("bin/dev"),
+  Rails.root.join("bin/dev"),
   force: true
 )
 chmod "bin/dev", 0755, verbose: false
