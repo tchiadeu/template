@@ -1,4 +1,3 @@
-ENGINE_NAME                         = File.basename(__FILE__).gsub('_tasks.rake', '')
 APPLICATION_LAYOUT_PATH             = Rails.root.join("app/views/layouts/application.html.erb")
 CENTERING_CONTAINER_INSERTION_POINT = /^\s*<%= yield %>/.freeze
 
@@ -21,7 +20,7 @@ say "Build into app/assets/builds"
 empty_directory "app/assets/builds"
 keep_file "app/assets/builds"
 
-if (sprockets_manifest_path = Rails.root.join("app/assets/config/#{ENGINE_NAME}_manifest.js")).exist?
+if (sprockets_manifest_path = Rails.root.join("app/assets/config/#{Rails.root.to_s.camelize.demodulize.tableize}_manifest.js")).exist?
   append_to_file sprockets_manifest_path, %(//= link_tree ../builds\n)
 end
 
