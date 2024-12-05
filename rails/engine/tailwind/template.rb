@@ -1,0 +1,77 @@
+ENGINE_NAME                         = File.basename(__FILE__).gsub('_tasks.rake', '')
+ENGINE_MODULE                       = ENGINE_NAME.camelize.constantize
+APPLICATION_LAYOUT_PATH             = ENGINE_MODULE::Engine.root.join("app/views/layouts/application.html.erb")
+CENTERING_CONTAINER_INSERTION_POINT = /^\s*<%= yield %>/.freeze
+
+if APPLICATION_LAYOUT_PATH.exist?
+  say "Add Tailwindcss include tags and container element in application layout"
+  insert_into_file APPLICATION_LAYOUT_PATH.to_s, <<~ERB.indent(4), before: /^\s*<%= stylesheet_link_tag/
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+  ERB
+
+  if File.open(APPLICATION_LAYOUT_PATH).read =~ /<body>\n\s*<%= yield %>\n\s*<\/body>/
+    insert_into_file APPLICATION_LAYOUT_PATH.to_s, %(    <main class="container mx-auto mt-28 px-5 flex">\n  ), before: CENTERING_CONTAINER_INSERTION_POINT
+    insert_into_file APPLICATION_LAYOUT_PATH.to_s, %(\n    </main>),  after: CENTERING_CONTAINER_INSERTION_POINT
+  end
+else
+  say "Default application.html.erb is missing!", :red
+  say %(        Add <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %> within the <head> tag in your custom layout.)
+end
+
+say "Build into app/assets/builds"
+empty_directory "app/assets/builds"
+keep_file "app/assets/builds"
+
+if (sprockets_manifest_path = ENGINE_MODULE::Engine.root.join("app/assets/config/#{ENGINE_NAME}_manifest.js")).exist?
+  append_to_file sprockets_manifest_path, %(//= link_tree ../builds\n)
+end
+
+if ENGINE_MODULE::Engine.root.join(".gitignore").exist?
+  append_to_file(
+    ENGINE_MODULE::Engine.root.join(".gitignore"),
+    %(\n/app/assets/builds/*\n!/app/assets/builds/.keep\n)
+  )
+end
+
+unless Rails.root.join("config/tailwind.config.js").exist?
+  say "Add default config/tailwindcss.config.js"
+  copy_file(
+    Tailwindcss::Engine.root.join("lib/install/tailwind.config.js"),
+    ENGINE_MODULE::Engine.root.join("config/tailwind.config.js")
+  )
+end
+
+unless Rails.root.join("app/assets/stylesheets/application.tailwind.css").exist?
+  say "Add default app/assets/stylesheets/application.tailwind.css"
+  copy_file(
+    Tailwindcss::Engine.root.join("lib/install/application.tailwind.css"),
+    ENGINE_MODULE::Engine.root.join("app/assets/stylesheets/application.tailwind.css")
+  )
+end
+
+if ENGINE_MODULE::Engine.root.join("Procfile.dev").exist?
+  append_to_file(
+    ENGINE_MODULE::Engine.root.join("Procfile.dev"),
+    "css: bin/rails tailwindcss:watch\n"
+  )
+else
+  say "Add default Procfile.dev"
+  copy_file(
+    Tailwindcss::Engine.root.join("lib/install/Procfile.dev"),
+    ENGINE_MODULE::Engine.root.join("Procfile.dev")
+  )
+
+  say "Ensure foreman is installed"
+  run "gem install foreman"
+end
+
+say "Add bin/dev to start foreman"
+copy_file(
+  Tailwindcss::Engine.root.join("lib/install/dev"),
+  ENGINE_MODULE::Engine.root.join("bin/dev"),
+  force: true
+)
+chmod "bin/dev", 0755, verbose: false
+
+say "Compile initial Tailwind build"
+run "rails tailwindcss:build"
