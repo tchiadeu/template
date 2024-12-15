@@ -62,7 +62,6 @@ after_bundle do
   if is_devise_needed
     generate('devise:install')
     generate('devise', devise_model_name)
-    run 'sudo service postgresql start'
     rails_command 'db:create db:migrate'
     generate('devise:views')
   end
