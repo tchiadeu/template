@@ -15,7 +15,6 @@ if is_devise_needed
   end
 end
 gem 'tailwind_merge'
-gem 'html_attrs'
 gem 'view_component-contrib'
 
 gem_group :development, :test do
