@@ -27,6 +27,13 @@ gem_group :development, :test do
   gem 'dotenv-rails'
 end
 
+gem_group :test do
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "webdrivers"
+  gem "database_cleaner-active_record"
+end
+
 # Generators
 generators = <<~RUBY
   config.generators do |generate|
@@ -48,8 +55,7 @@ general_config = <<~RUBY
   config.paths['app/views'].unshift(Rails.root.join('app/views/controllers'))
   config.autoload_paths << Rails.root.join("app", "views", "components")
   config.view_component.preview_paths << Rails.root.join("app", "views", "components")
-  config.autoload_paths << Rails.root.join("app", "decorators")
-  config.autoload_paths << Rails.root.join("app", "services")
+  config.autoload_paths << Rails.root.join("app", "decorators", "concerns")
 RUBY
 
 run 'mkdir app/services'
@@ -68,6 +74,10 @@ after_bundle do
   run 'bundle exec guard init rspec'
   run 'mkdir spec/factories' unless is_devise_needed
   run 'rm -rf test'
+  run 'touch yarn.lock'
+  run 'yarn init -y'
+  run 'bundle add vite_rails'
+  run 'bundle exec vite install'
   environment generators
   environment general_config
   rails_command "app:template LOCATION='https://railsbytes.com/script/zJosO5'"
