@@ -66,7 +66,7 @@ after_bundle do
   if is_devise_needed
     generate('devise:install')
     generate('devise', devise_model_name)
-    rails_command 'db:create db:migrate'
+    # rails_command 'db:create db:migrate'
     generate('devise:views')
   end
   generate('rspec:install')
