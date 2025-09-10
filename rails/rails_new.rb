@@ -55,9 +55,6 @@ general_config = <<~RUBY
   config.autoload_paths << Rails.root.join("app", "decorators", "concerns")
 RUBY
 
-# config.autoload_paths << Rails.root.join("app", "views", "components")
-# config.view_component.preview_paths << Rails.root.join("app", "views", "components")
-
 run 'mkdir app/services'
 run 'mkdir app/decorators'
 run 'touch .env'
@@ -67,7 +64,7 @@ after_bundle do
   if is_devise_needed
     generate('devise:install')
     generate('devise', devise_model_name)
-    # rails_command 'db:create db:migrate'
+    rails_command 'db:create db:migrate'
     generate('devise:views')
   end
   generate('rspec:install')
