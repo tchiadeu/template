@@ -52,11 +52,11 @@ RUBY
 # General Config
 general_config = <<~RUBY
   config.paths['app/views'].unshift(Rails.root.join('app/views/controllers'))
-  config.autoload_paths << Rails.root.join("app", "views", "components")
-  config.view_component.preview_paths ||= []
-  config.view_component.preview_paths << Rails.root.join("app", "views", "components")
   config.autoload_paths << Rails.root.join("app", "decorators", "concerns")
 RUBY
+
+# config.autoload_paths << Rails.root.join("app", "views", "components")
+# config.view_component.preview_paths << Rails.root.join("app", "views", "components")
 
 run 'mkdir app/services'
 run 'mkdir app/decorators'
