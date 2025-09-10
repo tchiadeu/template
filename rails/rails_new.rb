@@ -72,6 +72,8 @@ after_bundle do
   generate('rspec:install')
   run 'mkdir spec/factories' unless is_devise_needed
   run 'rm -rf test'
+  run 'touch .yarnrc'
+  run 'echo "version=1.22.22" > .yarnrc'
   run 'touch yarn.lock'
   run 'yarn init -y'
   run 'bundle add vite_rails'
