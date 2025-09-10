@@ -53,6 +53,7 @@ RUBY
 general_config = <<~RUBY
   config.paths['app/views'].unshift(Rails.root.join('app/views/controllers'))
   config.autoload_paths << Rails.root.join("app", "views", "components")
+  config.view_component.preview_paths ||= []
   config.view_component.preview_paths << Rails.root.join("app", "views", "components")
   config.autoload_paths << Rails.root.join("app", "decorators", "concerns")
 RUBY
@@ -72,6 +73,7 @@ after_bundle do
   generate('rspec:install')
   run 'mkdir spec/factories' unless is_devise_needed
   run 'rm -rf test'
+  run 'corepack disable'
   run 'touch .yarnrc'
   run 'echo "version=1.22.22" > .yarnrc'
   run 'touch yarn.lock'
