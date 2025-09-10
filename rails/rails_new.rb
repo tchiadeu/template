@@ -19,7 +19,6 @@ gem 'view_component-contrib'
 
 gem_group :development, :test do
   gem 'rspec-rails'
-  gem 'guard-rspec', require: false
   gem 'pry-rails'
   gem 'pry-byebug'
   gem 'factory_bot_rails'
