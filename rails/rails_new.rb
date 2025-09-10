@@ -70,7 +70,6 @@ after_bundle do
     generate('devise:views')
   end
   generate('rspec:install')
-  run 'bundle exec guard init rspec'
   run 'mkdir spec/factories' unless is_devise_needed
   run 'rm -rf test'
   run 'touch yarn.lock'
