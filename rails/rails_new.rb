@@ -1,19 +1,5 @@
 # Gemfile
 say '👋 Welcome to the user builder template'
-is_devise_needed = yes?('Install devise for the users?')
-if is_devise_needed
-  not_english_app = no?('The app will be for english users only?')
-  devise_model_name = ask('What will be the model name for devise?')
-end
-
-if is_devise_needed
-  gem 'devise'
-  say_status :info, '✅ Devise gem added'
-  if not_english_app
-    gem 'devise-i18n'
-    say_status :info, '✅ Devise-I18n gem added'
-  end
-end
 gem 'tailwind_merge'
 gem 'view_component-contrib'
 
@@ -51,24 +37,15 @@ RUBY
 
 # General Config
 general_config = <<~RUBY
-  config.paths['app/views'].unshift(Rails.root.join('app/views/controllers'))
   config.autoload_paths << Rails.root.join("app", "decorators", "concerns")
 RUBY
 
-run 'mkdir app/services'
 run 'mkdir app/decorators'
-run 'touch .env'
 
 # After bundle
 after_bundle do
-  if is_devise_needed
-    generate('devise:install')
-    generate('devise', devise_model_name)
-    rails_command 'db:create db:migrate'
-    generate('devise:views')
-  end
   generate('rspec:install')
-  run 'mkdir spec/factories' unless is_devise_needed
+  run 'mkdir spec/factories'
   run 'rm -rf test'
   run 'corepack enable'
   run 'touch .yarnrc'
