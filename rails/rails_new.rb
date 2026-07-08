@@ -18,7 +18,7 @@ end
 
 gem_group :development do
   gem 'reactionview'
-  gem 'letter'
+  gem 'letter_opener'
 end
 
 gem_group :test do
