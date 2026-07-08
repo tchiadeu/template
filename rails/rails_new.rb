@@ -14,11 +14,11 @@ gem_group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'dotenv-rails'
+  gem 'letter_opener'
 end
 
 gem_group :development do
   gem 'reactionview'
-  gem 'letter_opener'
 end
 
 gem_group :test do
