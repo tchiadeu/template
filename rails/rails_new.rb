@@ -1,7 +1,11 @@
 # Gemfile
 say '👋 Welcome to the user builder template'
 gem 'tailwind_merge'
+gem 'view_component'
 gem 'view_component-contrib'
+gem 'lookbook', require: false
+
+gem 'mission_control-jobs'
 
 gem_group :development, :test do
   gem 'rspec-rails'
@@ -12,9 +16,12 @@ gem_group :development, :test do
   gem 'dotenv-rails'
 end
 
+gem_group :development do
+  gem 'reactionview'
+  gem 'letter'
+end
+
 gem_group :test do
-  gem "capybara"
-  gem "selenium-webdriver"
   gem "webdrivers"
   gem "database_cleaner-active_record"
 end
