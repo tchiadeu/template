@@ -40,7 +40,7 @@ general_config = <<~RUBY
   config.autoload_paths << Rails.root.join("app", "decorators", "concerns")
 RUBY
 
-run 'mkdir app/decorators'
+run 'mkdir -p app/decorators/concerns'
 
 # After bundle
 after_bundle do
